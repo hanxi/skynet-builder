@@ -1,16 +1,24 @@
 FROM debian:trixie
 
+# 构建参数：是否使用国内镜像
+ARG USE_CHINA_MIRROR=true
+
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=UTC \
     LANG=C.UTF-8 \
     PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-# 改为国内镜像
-RUN rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources && \
-    echo "deb http://mirrors.aliyun.com/debian/ trixie main contrib non-free non-free-firmware" > /etc/apt/sources.list && \
-    echo "deb http://mirrors.aliyun.com/debian/ trixie-updates main contrib non-free non-free-firmware" >> /etc/apt/sources.list && \
-    echo "deb http://mirrors.aliyun.com/debian/ trixie-backports main contrib non-free non-free-firmware" >> /etc/apt/sources.list && \
-    echo "deb http://mirrors.aliyun.com/debian-security/ trixie-security main contrib non-free non-free-firmware" >> /etc/apt/sources.list && \
+# 根据构建参数决定是否使用国内镜像
+RUN if [ "$USE_CHINA_MIRROR" = "true" ]; then \
+        echo "=== 使用国内镜像 ===" && \
+        rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources && \
+        echo "deb http://mirrors.aliyun.com/debian/ trixie main contrib non-free non-free-firmware" > /etc/apt/sources.list && \
+        echo "deb http://mirrors.aliyun.com/debian/ trixie-updates main contrib non-free non-free-firmware" >> /etc/apt/sources.list && \
+        echo "deb http://mirrors.aliyun.com/debian/ trixie-backports main contrib non-free non-free-firmware" >> /etc/apt/sources.list && \
+        echo "deb http://mirrors.aliyun.com/debian-security/ trixie-security main contrib non-free non-free-firmware" >> /etc/apt/sources.list; \
+    else \
+        echo "=== 使用官方镜像 ==="; \
+    fi && \
     echo "=== Sources List ===" && cat /etc/apt/sources.list && \
     echo "=== Sources.list.d ===" && ls -la /etc/apt/sources.list.d/ || echo "No additional sources"
 
