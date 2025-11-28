@@ -1,4 +1,4 @@
-# 用来编译 [Skynet](https://github.com/hanxi/skynet/tree/mingw) 的 Docker
+# 用来编译 [Skynet](https://github.com/cloudwu/skynet) 的 Docker
 
 目前主要是用来生成 Windows 平台使用的 exe 文件，依赖 mingw 的库平台编译环境。如果不想在 Docker 中运行，可以参考
 Dockerfile 安装 mingw 相关依赖即可。
